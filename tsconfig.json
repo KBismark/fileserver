@@ -1,0 +1,28 @@
+{
+    "exclude": ["node_modules", "dist", "jest.config.js","__tests__"],
+  
+    "compilerOptions": {
+        "outDir": "dist",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "declaration": false,
+        "lib": ["es6","dom"],
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "module": "commonjs",
+        "target": "es5",
+        "strict": false,
+        "paths": {
+            "@/*": [
+            "./*"
+            ]
+        }
+    },
+    "include": [
+      "**/*.ts",
+      "package.json",
+      "package-lock.json"
+    ]
+  }
+  
