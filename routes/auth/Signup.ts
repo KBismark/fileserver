@@ -24,7 +24,6 @@ export const Signup = async (request: Request,response: Response)=>{
         return respondToSignupUnSuccessful(response)
     }
 
-
     let {result:addedUser,errored} = await TryCatch(async ()=>{
       return  await Users.insertMany([
         {
