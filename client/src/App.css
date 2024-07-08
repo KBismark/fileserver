@@ -11,6 +11,22 @@
   margin-top: 60px;
 }
 
+button{
+  background-color: rgb(30, 199, 72);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 17px;
+  border-radius: 10px;
+  padding: 10px 20px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+button:hover{
+  background-color: rgb(31, 224, 79);
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
  
 }
