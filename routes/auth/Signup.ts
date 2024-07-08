@@ -14,20 +14,16 @@ export const Signup = async (request: Request,response: Response)=>{
     let {result:userExists,errored: err1} = await TryCatch(async ()=>{
         return await Users.findById(email);
     });
-
-    console.log(userExists, err1);
     
     if(userExists){
         return respondToSignupUnSuccessful(response)
     }
 
-    console.log(1);
 
     if(err1){
         return respondToSignupUnSuccessful(response)
     }
 
-    console.log(2)
 
     let {result:addedUser,errored} = await TryCatch(async ()=>{
       return  await Users.insertMany([
@@ -39,13 +35,10 @@ export const Signup = async (request: Request,response: Response)=>{
       ])
     });
 
-    console.log({addedUser,errored})
-    if(addedUser){
+    if(addedUser&&addedUser.length>0&&addedUser[0]){
         // Send Sucess response
         return response.status(ReesponseCodes.created).end();
     }
-
-    console.log(2)
 
      return respondToSignupUnSuccessful(response)
     
