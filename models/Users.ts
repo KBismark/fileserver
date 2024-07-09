@@ -16,9 +16,24 @@ const User = new mongoose.Schema({
         required: true
     },
     // Loged in or out?
-    isin:{
+    is_in:{
         type: Boolean,
         default: false
+    },
+    // A verified user?
+    verified:{
+        type: Boolean,
+        default: false
+    },
+    // Last verification request time in milliseconds
+    last_verify_request: {
+        type: Number,
+        default: 0
+    },
+    // Latest requested verification code
+    verify_code: {
+        type: String,
+        default: ''
     },
 })
 

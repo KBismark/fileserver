@@ -14,20 +14,27 @@ export const Login = async (request: Request,response: Response)=>{
     let {email, password} = request.body;
     email = email.toLowerCase()
     
-    let {result:user,errored} = await TryCatch(async ()=>{
-      return await Users.findOneAndUpdate({_id: email}, {isin: !0});
+    let { result: user, errored } = await TryCatch(async ()=>{
+      return await Users.findOne({_id: email, verified: true });
     });
-    console.log(user, errored)
+    
     if(user){
         const authenticated = await bcrypt.compare(password, user.password);
         if (!authenticated) {
             return respondToLoginUnSuccessful(response);
         }
 
-        const token = jwt.sign({ id: user._id, from: Date.now() }, JWT_SECRET);
-        response.cookie('auth', token, { maxAge: expiry, path: '/' } as any);
-      // Send Sucess response
-      return response.status(ReesponseCodes.ok).end();
+        const { result: loggedIn } = await TryCatch(async ()=>{
+            return await Users.findOneAndUpdate({_id: email, verified: true }, {is_in: true});
+        });
+
+        if(loggedIn){
+            const token = jwt.sign({ id: user._id, from: Date.now() }, JWT_SECRET);
+            response.cookie('auth', token, { maxAge: expiry, path: '/' } as any);
+            // Send Sucess response
+            return response.status(ReesponseCodes.ok).end();
+        }
+            
     }
     // Login was unsuccessful
     return respondToLoginUnSuccessful(response)
@@ -38,7 +45,7 @@ export const Login = async (request: Request,response: Response)=>{
 const respondToLoginUnSuccessful = (response: Response)=>{
     setTimeout(() => {
         response.status(ReesponseCodes.badRequest).end()
-    }, 4000);
+    }, 3000);
 }
 
 

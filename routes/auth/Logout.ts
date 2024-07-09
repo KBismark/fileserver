@@ -5,16 +5,19 @@ import { ReesponseCodes } from '../../utils/response_codes';
 
 
 export const Logout = async (request: Request,response: Response)=>{
+
+    if(!(request as any).user_authenticated) return respondToLogoutUnSuccessful(response);
+
     const email = (request as any).user_id; // This value is taken from user's session data
     
-    let {result:user,errored} = await TryCatch(async ()=>{
-      return await Users.findOneAndUpdate({_id: email}, {isin: !!0});
+    const { result: loggedOut } = await TryCatch(async ()=>{
+      return await Users.findOneAndUpdate({_id: email, verified: true}, {is_in: false});
     });
-    console.log(user, errored)
-    if(user){
-        return response.clearCookie('auth', {path: '/'}).status(ReesponseCodes.ok).end()
+    
+    if(loggedOut){
+        return response.clearCookie('auth', {path: '/'}).status(ReesponseCodes.okNoResponse).end()
     }
-    // Login was unsuccessful
+    // Logout was unsuccessful
     return respondToLogoutUnSuccessful(response)
 
 }
@@ -23,7 +26,7 @@ export const Logout = async (request: Request,response: Response)=>{
 const respondToLogoutUnSuccessful = (response: Response)=>{
     setTimeout(() => {
         response.status(ReesponseCodes.badRequest).end()
-    }, 4000);
+    }, 3000);
 }
 
 

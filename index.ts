@@ -25,19 +25,24 @@ app.use(express.json())
 const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' })
 app.use(morgan('combined', { stream: writableStream }))
 
+
 const serveBaseUrl = (res: any)=>{
     // res.setHeader('Cache-Control', 'public, max-age=10800'); // Cache for 3 hours 
     res.sendFile(join(__dirname, '/client/build', '/index.html'));
 }
+app.get(['/auth/reset'],(req, res, next)=>{
+     // Serve base index file
+     (req as any).serveBaseUrl = serveBaseUrl;
+    next();
+})
 
 // Mount entry path on route
-app.get('/',(req, res, next)=>{
-    // Serve base index file if authentication fails
-    (req as any).serveBaseUrl = serveBaseUrl;
-    next();
-}, authenticateRequest, (req, res)=>{
-    // User is authenticated. Redirect to content page
-    return res.redirect('/content?r=0');
+app.get('/', authenticateRequest, (req, res)=>{
+    if((req as any).user_authenticated){
+         // User is authenticated. Redirect to content page
+        return res.redirect('/content?r=0');
+    }
+    serveBaseUrl(res)
 })
 
 // serve static files
@@ -48,8 +53,11 @@ app.use('/auth', authRouter);
 
 // handle access to the content page
 app.get('/content', authenticateRequest, (req, res)=>{
-    // res.setHeader('Cache-Control', 'public, max-age=10800'); // Cache for 3 hours 
-  res.sendFile(join(__dirname, '/client/build', '/index.html'));
+    if((req as any).user_authenticated){
+        // User is authenticated. Serve page
+       return serveBaseUrl(res)
+    }
+    res.redirect('/');
 })
 
 
