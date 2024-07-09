@@ -7,4 +7,3 @@ export const ReesponseCodes = {
     ok: 200,
     okNoResponse: 204,
 }
-
