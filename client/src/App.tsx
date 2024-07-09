@@ -14,10 +14,11 @@ configureForReact(React);
 createStore<SiteData>('datastore', 'site', {email: '', loggedIn: false, files: []});
 
 function App() {
-  let pathname = `${window.location.pathname}`;
+  let pathname = `${window.location.pathname}`.toLowerCase();
   
-  const isContentPage = pathname.toLowerCase()==='/content';
- 
+  const isContentPage = pathname==='/content';
+  const isResetPassword = pathname === '/auth/reset';
+  const userData = (new URL(window.location.href).searchParams.get('r'))||'';
   return (
     <div className="App">
       
@@ -25,7 +26,7 @@ function App() {
       {/* <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}> */}
         <main className='Main'>
           {
-            !isContentPage&&<Login />
+            !isContentPage&&<Login resetPassword={isResetPassword} passwordResetData={userData} />
           }
           {
             isContentPage&&
