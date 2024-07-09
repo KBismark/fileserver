@@ -18,7 +18,7 @@ function App() {
   
   const isContentPage = pathname==='/content';
   const isResetPassword = pathname === '/auth/reset';
-  const userData = (new URL(window.location.href).searchParams.get('r'))||'';
+  const userData = (new URL(window.location.href)).searchParams.get('r')||'';
   return (
     <div className="App">
       
