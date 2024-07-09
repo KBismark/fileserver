@@ -75,7 +75,7 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                 let password = ref_2.current?.value;
                 if(password){
                     password = password.trim();
-                    if(password.length>7&&password.length<32){
+                    if(password.length>7&&password.length<32&&passwordResetData?.length>3&&passwordResetData?.length<2000){
 
                         fetch(`${serverUrl}/auth/reset`,{
                             method: 'PATCH',
