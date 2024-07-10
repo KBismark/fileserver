@@ -10,9 +10,9 @@ import { authRouter } from './routes/auth';
 import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
+import { IS_DEVELOPMENT, PORT } from './utils/constants';
 
-const PORT = process.env.PORT||3034;
-const IS_DEVELOPMENT = process.env.ENV_STRING==='development';
+
 const publicContentDir = join(__dirname, IS_DEVELOPMENT? '/client/build' : '../client/build')
 
 // App and server exported for testing purpose
