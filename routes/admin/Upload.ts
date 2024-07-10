@@ -22,8 +22,10 @@ const storage = new GridFsStorage({
         filename: filename,
         contentType: file.mimetype,
         metadata: {
-            type: file.mimetype,
-            name: filename
+            type: /^(image)/.test((file.mimetype as string))?'image':'doc',
+            name: filename,
+            title: (request.body as any).title,
+            description: (request.body as any).description,
         }
     }
   }
@@ -32,7 +34,7 @@ const storage = new GridFsStorage({
 // Configure multer with file size limit
 const uploadFile = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 megabytes limit in size
+  limits: { fileSize: 6 * 1024 * 1024 } // 6 megabytes limit in size
 }).single('file');
 
 
@@ -42,7 +44,9 @@ export const Upload = (request: Request, response: Response)=>{
         if(err){
             return response.status(ReesponseCodes.badRequest).end()
         }
-
+        const file = request.file;
+        console.log(file);
+        response.status(ReesponseCodes.created).end()
     })
 };
 
