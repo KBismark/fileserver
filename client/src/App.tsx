@@ -42,22 +42,28 @@ function App() {
             setData(data);
           })
           .catch((err)=>{
-            setFetch(false);
-            setFetchError(true)
+            setTimeout(() => {
+              setFetch(false);
+              setFetchError(true)
+            }, 1000);
           })
         }
-        setFetch(false);
-       setFetchError(true)
+        setTimeout(() => {
+          setFetch(false);
+          setFetchError(true)
+        }, 1000);
     })
     .catch((err)=>{
-      setFetch(false);
-     setFetchError(true)
+      setTimeout(() => {
+        setFetch(false);
+        setFetchError(true)
+      }, 3000);
     })
   }
   return (
     <div className="App">
       
-      {(isContentPage&&contentData.email.length<1)&&<Header email={contentData.email} />}
+      {(isContentPage&&contentData.email.length>1)&&<Header email={contentData.email} />}
       {/* <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}> */}
         <main className='Main'>
           {
@@ -85,7 +91,7 @@ function App() {
             isFetching?
             <span className='spinner'></span>:fetchErrored?
             <div style={{textAlign: 'center'}}>
-              <p>Check your internet connection and try again</p>
+              <p>Check your internet connection and try again.</p>
               <button onClick={fetchData} style={{padding: '10px 25px'}}>Try again</button>
             </div>
             :null
