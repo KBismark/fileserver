@@ -88,7 +88,7 @@ export const authenticateRequest = async (req: Request, res: Response, next: Nex
     if(expired){
       return TryCatch(async ()=>{
         // Find out if user has logged out
-        return await Users.findOne({_id: id, verified: true, isin: true});
+        return await Users.findOne({_id: id, verified: true, is_in: true});
       })
       .then(({result:user,errored})=>{
         if(user){ // User is not logged out
