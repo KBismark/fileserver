@@ -1,14 +1,8 @@
 
-import express, { NextFunction, Request, Response } from 'express'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import {Users, type UserType } from '../../models/Users';
+import { NextFunction, Request, Response } from 'express'
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { getVerificationCode, sendMail } from '../../utils/index';
-import { JWT_SECRET } from '../../utils/constants';
-
-export type CardProps = {title: string; img: string; type?: 'image'|'doc', description: string}
+import { Uploader } from '../../models/Content';
 
 export const PageData = async (request: Request,response: Response)=>{
     if(!(request as any).user_authenticated){
@@ -16,8 +10,24 @@ export const PageData = async (request: Request,response: Response)=>{
     }
     const user_id = (request as any).user_id ;
 
-    response.status(ReesponseCodes.ok).json({email: user_id, content: []})
+    const {result: contents, errored} = await TryCatch(async ()=>{
+        return await Uploader.find({}, {time: 0}, {lean: true, limit: 30})
+    })
+    if(contents&&contents.length>0){
+        return response.status(ReesponseCodes.ok).json({email: user_id, content: contents.map((data)=>{
+            return {
+                id: data._id,
+                downloadCount: data.downloadCount,
+                shareCount: data.shareCount,
+                description: data.description,
+                title: data.title,
+                img: `${request.protocol}://${request.get('host')}/files/${data._id}.${data.suffix}`,
+                type: data.type
+            }
+        })})
+    }
     
+    response.status(ReesponseCodes.notFound).end()
 }
 
 
