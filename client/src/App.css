@@ -31,8 +31,16 @@ button:hover{
  
 }
 
+.spinner{
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 5px solid rgb(31, 224, 79);;
+  border-bottom: 5px solid rgba(31, 224, 79, 0);;
+  animation: spin .5s ease-in-out infinite;
+}
 
-@keyframes App-logo-spin {
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }

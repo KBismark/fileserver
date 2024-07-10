@@ -1,8 +1,9 @@
 import { useStateStore } from 'statestorejs'
 import './auth.css'
 import { useRef, useState } from 'react';
+import { serverUrl } from './head';
 
-export const serverUrl = process.env.REACT_APP_SERVER_URL||'http://localhost:3034'||window.location.origin;
+
 
 export type SiteData = {
     loggedIn: boolean;
@@ -86,8 +87,8 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                         })
                         .then((response)=>{
                             if(response.ok){
-                                window.alert('Your password has been reset. Please login to your account.');
-                                window.location.replace(`${window.location.origin}/content?r=1`);
+                                window.alert('Your password has been reset. Please log in to your account.');
+                                window.location.replace(`${window.location.origin}/`);
                                 
                             }else{
                                 setAlert({alert: true, message: 'Sorry, something went wrong. Try again later.'})
@@ -96,7 +97,7 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                         })
                         .catch((err)=>{
                             setRequestStatus(false);
-                            setAlert({alert: true, message: 'An error occured. Check your internet connection.'})
+                            setAlert({alert: true, message: 'Check your internet connection.'})
                         })
                         return;
                     }
@@ -118,8 +119,11 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                         })
                         .then((response)=>{
                             if(response.ok){
-                                window.alert('Please check your email for a link to reset your password.');
+                                window.alert('Please check your email for a link to reset your password. Kindly check your spam messages if you can\'t find it.');
                                 setFormType('sign_in');
+                                setAlert({alert: false, message: ''});
+                                // allow 
+                                ref_1.current&& (ref_1.current.value = '');
                                 
                             }else{
                                 setAlert({alert: true, message: 'Sorry, something went wrong. Please try again later.'})
@@ -128,7 +132,7 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                         })
                         .catch((err)=>{
                             setRequestStatus(false);
-                            setAlert({alert: true, message: 'An error occured. Please check your internet connection.'})
+                            setAlert({alert: true, message: 'Please check your internet connection.'})
                         })
                         return;
                     }
@@ -156,8 +160,12 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                             if(fType==='sign_in'){
                                 window.location.replace(`${window.location.origin}/content?r=1`)
                             }else{
-                                window.alert('Successfuly signed up! Please login to see available documents');
+                                window.alert('Your account has been successfuly created. A verification link has been sent to you to verify your email. Kindly check your spam messages if you can\'t find it.');
                                 setFormType('sign_in');
+                                setAlert({alert: false, message: ''});
+                                // allow 
+                                ref_1.current&& (ref_1.current.value = '');
+                                ref_2.current&& (ref_2.current.value = '');
                             }
                             setRequestStatus(false);
                         }else{
@@ -167,7 +175,7 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                     })
                     .catch((err)=>{
                         setRequestStatus(false);
-                        setAlert({alert: true, message: 'An error occured. Please check your internet connection.'})
+                        setAlert({alert: true, message: 'Please check your internet connection.'})
                     })
                     return;
                 }
