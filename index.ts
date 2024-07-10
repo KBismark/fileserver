@@ -22,8 +22,8 @@ app.use(compression())
 app.use(express.json())
 
 // Logs applications access to a log.txt file
-const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' })
-app.use(morgan('combined', { stream: writableStream }))
+const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' });
+app.use(['/auth/:route', '/content'], morgan('combined', { stream: writableStream }));
 
 
 const serveBaseUrl = (res: any)=>{

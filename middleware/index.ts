@@ -77,7 +77,7 @@ export const authenticateRequest = async (req: Request, res: Response, next: Nex
   
   // Uses JWT to encode user_id (email) and use encoded value to set the cookie
   jwt.verify(`${req.cookies.auth}`, JWT_SECRET, (err: any, {id, from}: {id: string, from: number}) => {
-    if (err) {
+    if (err||typeof id!=='string'||typeof from!=='number') {
       res.clearCookie('auth', {path: '/'});
       (req as any).user_authenticated = false;
       return next()

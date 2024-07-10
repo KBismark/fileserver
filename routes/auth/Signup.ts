@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import {Users, type UserType } from '../../models/Users';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { getVerificationCode, JWT_SECRET } from '../../utils/index';
+import { getVerificationCode, JWT_SECRET, sendMail } from '../../utils/index';
 
 
 export const Signup = async (request: Request,response: Response)=>{
@@ -43,10 +43,21 @@ export const Signup = async (request: Request,response: Response)=>{
     if(addedUser&&addedUser.length>0&&addedUser[0]){
         const token = jwt.sign({ id: email, time: currentTime, code: verificationCode, requested: 0 }, JWT_SECRET);
         // Send email containing the verification link continue account creation 
-        const link = `${request.protocol}://${request.get('host')}/auth/verify?r=${token}`
-
-        // Send Sucess response
-        return response.status(ReesponseCodes.created).end();
+        const link = `${request.protocol}://${request.get('host')}/auth/verify?r=${token}`;
+        return sendMail({
+            to: email,
+            subject: 'FILE SERVER ACCOUNT VERIFICATION',
+            html: `<body style="padding: 20px 10px;"><h2 style="color:rgb(30, 199, 72);">Hello Dear,</h2>`+
+            `<p>Kindly click on the link below to verify your account.</p><a href="${link}">${link}</a>`+
+            `<p>Please ignore if you did not request for this message.</p><br/><br/>Regards,<br/><br/>Bismark Yamoah`+
+            `<br/>(Software Engineer)<br/><strong>KBismark Development</strong></body>`
+        },(err, data)=>{
+            if(err){
+                return respondToSignupUnSuccessful(response)
+            }
+             // Send Sucess response
+            response.status(ReesponseCodes.created).end();
+        }) 
     }
 
      return respondToSignupUnSuccessful(response)

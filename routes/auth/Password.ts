@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import {Users, type UserType } from '../../models/Users';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { getVerificationCode, JWT_SECRET } from '../../utils/index';
+import { getVerificationCode, JWT_SECRET, sendMail } from '../../utils/index';
 
 
 export const RequestPasswordReset = async (request: Request,response: Response)=>{
@@ -24,9 +24,20 @@ export const RequestPasswordReset = async (request: Request,response: Response)=
         const token = jwt.sign({ id: email, time: currentTime, code: verificationCode, requested: 1 }, JWT_SECRET);
         // Send email containing the reset link continue password reset 
         const link = `${request.protocol}://${request.get('host')}/auth/reset?r=${token}`
-
-         // Send Sucess response
-         return response.status(ReesponseCodes.okNoResponse).end();
+        return sendMail({
+            to: email,
+            subject: 'PASSWORD RESET LINK',
+            html: `<body style="padding: 20px 10px;"><h2 style="color:rgb(30, 199, 72);">Hello Dear,</h2>`+
+            `<p>Kindly click on the link below to reset your password.</p><a href="${link}">${link}</a>`+
+             `<p>Please ignore if you did not request for this message.</p><br/><br/>Regards,<br/><br/>Bismark Yamoah`+
+             `<br/>(Software Engineer)<br/><strong>KBismark Development</strong></body>`
+        },(err, data)=>{
+            if(err){
+                return respondToUnSuccessful(response);
+            }
+             // Send Sucess response
+            response.status(ReesponseCodes.okNoResponse).end();
+        }) 
     }
 
     return respondToUnSuccessful(response);
