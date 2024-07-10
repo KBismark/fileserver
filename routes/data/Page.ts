@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken'
 import {Users, type UserType } from '../../models/Users';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { getVerificationCode, JWT_SECRET, sendMail } from '../../utils/index';
-
+import { getVerificationCode, sendMail } from '../../utils/index';
+import { JWT_SECRET } from '../../utils/constants';
 
 export type CardProps = {title: string; img: string; type?: 'image'|'doc', description: string}
 
