@@ -11,7 +11,7 @@ export const Header = ({email}: Props)=>{
         if(loggingOut) return;
         setLog(true);
 
-        fetch(`${serverUrl}/auth/request_reset`,{
+        fetch(`${serverUrl}/auth/sign_out`,{
             method: 'PATCH',
             body: JSON.stringify({}),
             headers: {
