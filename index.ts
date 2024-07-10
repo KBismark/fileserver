@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
@@ -12,7 +13,8 @@ import { PageData } from './routes/data/Page';
 
 const PORT = process.env.PORT||3034;
 
-const app = express();
+// App and server exported for testing purpose
+export const app = express();
 // Handle CORS
 app.use(cors());
 // Parse cookies

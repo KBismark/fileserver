@@ -21,7 +21,7 @@ export const PageData = async (request: Request,response: Response)=>{
 }
 
 
- // Responds in some seconds later. This is just to reduce robot (non-human) signup
+ // Responds in some seconds later. This is just to reduce robot (non-human) attempts
  const respondToUnSuccessful = (response: Response)=>{
     setTimeout(() => {
         response.status(ReesponseCodes.badRequest).end()
