@@ -6,7 +6,7 @@ import { TryCatch } from '../utils/trycatch';
 import { Users } from '../models/Users';
 import { JWT_SECRET } from '../utils/index';
 
-// Validates form inputs
+// Validates login and sinup form  inputs
 export const authValidation = [
     body('email').isString().trim().toLowerCase().isEmail().isLength({min:3,max:100}).withMessage({field: 'email'}),
     body('password').isString().trim().toLowerCase().isLength({min:8,max:32}).withMessage({field: 'password'}),
@@ -14,20 +14,21 @@ export const authValidation = [
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return setTimeout(() => {
-          res.status(ReesponseCodes.unathourized).end();
+          res.status(ReesponseCodes.badRequest).end();
         }, 3000);
       }
       next();
     }
 ];
 
+// Validates email only in a request body
 export const emailValidation = [
   body('email').isString().trim().toLowerCase().isEmail().isLength({min:3,max:100}).withMessage({field: 'email'}),
   (req: Request, res: Response, next: NextFunction)=>{
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return setTimeout(() => {
-        res.status(ReesponseCodes.unathourized).end();
+        res.status(ReesponseCodes.badRequest).end();
       }, 3000);
     }
     next();
@@ -68,7 +69,7 @@ export const passwordResetValidation = [
 const expiry = 1000 * 60 * 20; // 20 minutes. Short expiry to keep user sessions
 const long_expiry = 1000 * 60 * 60 * 24 * 7; // 7 days. Require mandatory re-login after 7 days of inactivity
 
-
+// Authenticates and refreshes user sessions
 export const authenticateRequest = async (req: Request, res: Response, next: NextFunction)=>{
   if(!req.cookies||!req.cookies.auth){
     (req as any).authenticated = false;
@@ -77,7 +78,7 @@ export const authenticateRequest = async (req: Request, res: Response, next: Nex
   
   // Uses JWT to encode user_id (email) and use encoded value to set the cookie
   jwt.verify(`${req.cookies.auth}`, JWT_SECRET, (err: any, {id, from}: {id: string, from: number}) => {
-    if (err) {
+    if (err||typeof id!=='string'||typeof from!=='number') {
       res.clearCookie('auth', {path: '/'});
       (req as any).user_authenticated = false;
       return next()

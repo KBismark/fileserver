@@ -18,17 +18,20 @@ export const Login = async (request: Request,response: Response)=>{
       return await Users.findOne({_id: email, verified: true });
     });
     
-    if(user){
+    if(user){ // User exists
+        // Compare passwords
         const authenticated = await bcrypt.compare(password, user.password);
         if (!authenticated) {
             return respondToLoginUnSuccessful(response);
         }
 
+        // Log user in after autehntication
         const { result: loggedIn } = await TryCatch(async ()=>{
             return await Users.findOneAndUpdate({_id: email, verified: true }, {is_in: true});
         });
 
-        if(loggedIn){
+        if(loggedIn){ // Log in successful
+            // Encode user id for authenticatibg subsequent requests
             const token = jwt.sign({ id: user._id, from: Date.now() }, JWT_SECRET);
             response.cookie('auth', token, { maxAge: expiry, path: '/' } as any);
             // Send Sucess response

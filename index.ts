@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
@@ -8,10 +9,12 @@ import {createWriteStream} from 'fs'
 import { connectToDatabase } from './db-connection';
 import { authRouter } from './routes/auth';
 import { authenticateRequest } from './middleware';
+import { PageData } from './routes/data/Page';
 
 const PORT = process.env.PORT||3034;
 
-const app = express();
+// App and server exported for testing purpose
+export const app = express();
 // Handle CORS
 app.use(cors());
 // Parse cookies
@@ -21,20 +24,15 @@ app.use(compression())
 // Pares JSON resposes
 app.use(express.json())
 
-// Logs applications access to a log.txt file
-const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' })
-app.use(morgan('combined', { stream: writableStream }))
+// Logs application access to a log.txt file
+const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' });
+app.use(['/auth/:route', '/content', '/resource/:route'], morgan('combined', { stream: writableStream }));
 
 
 const serveBaseUrl = (res: any)=>{
     // res.setHeader('Cache-Control', 'public, max-age=10800'); // Cache for 3 hours 
     res.sendFile(join(__dirname, '/client/build', '/index.html'));
 }
-app.get(['/auth/reset'],(req, res, next)=>{
-     // Serve base index file
-     (req as any).serveBaseUrl = serveBaseUrl;
-    next();
-})
 
 // Mount entry path on route
 app.get('/', authenticateRequest, (req, res)=>{
@@ -43,7 +41,15 @@ app.get('/', authenticateRequest, (req, res)=>{
         return res.redirect('/content?r=0');
     }
     serveBaseUrl(res)
+});
+
+app.get(['/auth/reset'],(req, res, next)=>{
+    // Serves reset page
+    (req as any).serveBaseUrl = serveBaseUrl;
+   next();
 })
+
+app.get('/resource/data', authenticateRequest, PageData)
 
 // serve static files
 app.use('/', express.static(join(__dirname, '/client/build')));

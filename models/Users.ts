@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export type UserType = {
     _id: string,
     password: string;
-    isin?: boolean;
+    is_in?: boolean;
 }
 const User = new mongoose.Schema({
     // users email is used as id to document

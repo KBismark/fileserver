@@ -6,7 +6,7 @@ dotenv.config()
 const connectionString = process.env.DB_CONNECTION_STRING
 
 export async function connectToDatabase() {
-  // Connect to the databas with auto indexing for efficient querying
+  // Connect to the database 
   await mongoose.connect(connectionString, {autoIndex: true});
 }
 
