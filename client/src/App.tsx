@@ -6,7 +6,7 @@ import { CardProps, FileCards } from './components/filecard';
 import example_img from './assets/example_img.jpg'
 import example_doc from './assets/example_doc.png'
 import { Header, serverUrl } from './components/head';
-import { Login, type SiteData } from './components/auth';
+import { Login, Upload, type SiteData } from './components/auth';
 
 configureForReact(React);
 
@@ -20,6 +20,7 @@ function App() {
   const [fetchErrored, setFetchError] = useState<boolean>(false);
   const [isFetching, setFetch] = useState<boolean>(false);
   const isResetPassword = pathname === '/auth/reset';
+  const isAdmin = pathname === '/admin'
   const authData = (new URL(window.location.href)).searchParams.get('r')||'';
   useEffect(()=>{
     if(isContentPage){
@@ -64,11 +65,13 @@ function App() {
     <div className="App">
       
       {(isContentPage&&contentData.email.length>1)&&<Header email={contentData.email} />}
+      {isAdmin&&<Header email='admin@fileserver.com' />}
       {/* <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}> */}
         <main className='Main'>
           {
-            !isContentPage&&<Login resetPassword={isResetPassword} passwordResetData={authData} />
+            !isContentPage||!isAdmin&&<Login resetPassword={isResetPassword} passwordResetData={authData} />
           }
+          {isAdmin&&<Upload />}
           {
             (isContentPage&&contentData.email.length>1)&&
             contentData.content.map((file)=>{

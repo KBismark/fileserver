@@ -13,14 +13,16 @@
     flex-direction: column;
     position: relative;
 }
-
+.auth-card-container.upload{
+    height: 700px;
+}
 
 .auth-card-container label{
     margin-bottom: 30px;
 }
 
 
-.auth-card-container input{
+.auth-card-container input, .auth-card-container textarea{
     background-color: #f3f4f6;
     width: 400px;
     padding: 10px 15px;
@@ -31,6 +33,9 @@
     border-radius: 6px;
 }
 
+.auth-card-container textarea{
+    resize: none;
+}
 .auth-card-container .card-button{
     width: 450px;
     display: flex;
@@ -55,7 +60,7 @@
     .auth-card-container .card-button{
         width: 95%;
     }
-    .auth-card-container input{
-        width: 93%;
+    .auth-card-container input, .auth-card-container textarea{
+        width: 300px;
     }
 }
