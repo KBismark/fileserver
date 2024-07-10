@@ -1,6 +1,6 @@
 import './filecard.css';
 
-type CardProps = {title: string; img: string; type?: 'image'|'doc', description: string}
+export type CardProps = {title: string; img: string; type?: 'image'|'doc', description: string}
 export const FileCards = ({ 
     title, type, img,
     description

@@ -41,3 +41,21 @@
 .auth-card-container .card-button button{
     width: 95%;
 }
+
+@media screen and (max-width: 735px) {
+    .auth-card-container{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .auth-card-container{
+        width: 100%;
+    }
+    .auth-card-container .card-button{
+        width: 95%;
+    }
+    .auth-card-container input{
+        width: 93%;
+    }
+}
