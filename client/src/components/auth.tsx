@@ -158,9 +158,18 @@ export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolea
                     .then((response)=>{
                         if(response.ok){
                             if(fType==='sign_in'){
-                                window.location.replace(`${window.location.origin}/content?r=1`)
+                                response.json()
+                                .then((data)=>{
+                                    console.log(data);
+                                    
+                                    window.location.replace(`${window.location.origin}${data.isAdmin?'/admin?r=true':'/content?r=1'}`);
+                                })
+                                .catch((err)=>{
+                                    setRequestStatus(false);
+                                    setAlert({alert: true, message: 'Sorry, something went wrong. Please try again later.'})
+                                })
                             }else{
-                                window.alert('Your account has been successfuly created. A verification link has been sent to you to verify your email. Kindly check your spam messages if you can\'t find it.');
+                                window.alert('A verification link has been sent to you to verify your email. Kindly check your spam messages if you can\'t find it.');
                                 setFormType('sign_in');
                                 setAlert({alert: false, message: ''});
                                 // allow 
