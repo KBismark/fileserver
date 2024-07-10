@@ -69,7 +69,7 @@ function App() {
       {/* <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}> */}
         <main className='Main'>
           {
-            !isContentPage||!isAdmin&&<Login resetPassword={isResetPassword} passwordResetData={authData} />
+            !(isContentPage||isAdmin)&&<Login resetPassword={isResetPassword} passwordResetData={authData} />
           }
           {isAdmin&&<Upload />}
           {
