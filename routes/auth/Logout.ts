@@ -6,7 +6,7 @@ import { ReesponseCodes } from '../../utils/response_codes';
 
 export const Logout = async (request: Request,response: Response)=>{
 
-    if(!(request as any).user_authenticated) return respondToLogoutUnSuccessful(response);
+    if(!(request as any).user_authenticated) { return respondToLogoutUnSuccessful(response) };
 
     const email = (request as any).user_id; // This value is taken from user's session data
     
