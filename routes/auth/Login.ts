@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import {Users, type UserType } from '../../models/Users'
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { JWT_SECRET } from '../../utils/constants';
+import { ADMIN_ACCOUNT, JWT_SECRET } from '../../utils/constants';
 
 const expiry = 1000 * 60 * 60 * 24 * 7; // 7 days inactivity expiry
 
@@ -35,7 +35,7 @@ export const Login = async (request: Request,response: Response)=>{
             const token = jwt.sign({ id: (user as any)._id, from: Date.now() }, JWT_SECRET);
             response.cookie('auth', token, { maxAge: expiry, path: '/' } as any);
             // Send Sucess response
-            return response.status(ReesponseCodes.ok).end();
+            return response.status(ReesponseCodes.ok).json({isAdmin: email===ADMIN_ACCOUNT});
         }
             
     }

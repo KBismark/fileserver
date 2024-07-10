@@ -10,7 +10,7 @@ import { authRouter } from './routes/auth';
 import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
-import { IS_DEVELOPMENT, PORT } from './utils/constants';
+import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
 
 
 const publicContentDir = join(__dirname, IS_DEVELOPMENT? '/client/build' : '../client/build')
@@ -51,6 +51,28 @@ app.get(['/auth/reset'],(req, res, next)=>{
    next();
 })
 
+// handle access to the content page
+app.get('/content', authenticateRequest, (req, res)=>{
+    if((req as any).user_authenticated){
+        // User is authenticated. Serve page
+       return serveBaseUrl(res)
+    }
+    res.redirect('/');
+})
+
+// handle access to the admin page
+app.get('/admin', authenticateRequest, (req, res)=>{
+    if((req as any).user_authenticated){
+        if((req as any).user_id!==ADMIN_ACCOUNT){
+            // Only admin accounts get to access route: /admin
+            return  res.clearCookie('auth', {path: '/'}).redirect('/');
+        }
+        // User is authenticated. Serve page
+       return serveBaseUrl(res)
+    }
+    
+})
+
 app.get('/resource/data', authenticateRequest, PageData)
 
 // serve static files
@@ -61,16 +83,6 @@ app.use('/auth', authRouter);
 
 // Mount adim route
 app.use('/admin', adminRouter);
-
-// handle access to the content page
-app.get('/content', authenticateRequest, (req, res)=>{
-    if((req as any).user_authenticated){
-        // User is authenticated. Serve page
-       return serveBaseUrl(res)
-    }
-    res.redirect('/');
-})
-
 
 startApp(); // Starts the server
 function startApp(){
