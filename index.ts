@@ -12,6 +12,8 @@ import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 
 const PORT = process.env.PORT||3034;
+const IS_DEVELOPMENT = process.env.ENV_STRING==='development';
+const publicContentDir = join(__dirname, IS_DEVELOPMENT? '/client/build' : '../client/build')
 
 // App and server exported for testing purpose
 export const app = express();
@@ -31,7 +33,7 @@ app.use(['/auth/:route', '/content', '/resource/:route'], morgan('combined', { s
 
 const serveBaseUrl = (res: any)=>{
     // res.setHeader('Cache-Control', 'public, max-age=10800'); // Cache for 3 hours 
-    res.sendFile(join(__dirname, '/client/build', '/index.html'));
+    res.sendFile(join(publicContentDir, '/index.html'));
 }
 
 // Mount entry path on route
@@ -52,7 +54,7 @@ app.get(['/auth/reset'],(req, res, next)=>{
 app.get('/resource/data', authenticateRequest, PageData)
 
 // serve static files
-app.use('/', express.static(join(__dirname, '/client/build')));
+app.use('/', express.static(publicContentDir));
 
 // Mount authentication route
 app.use('/auth', authRouter);

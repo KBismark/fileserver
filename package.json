@@ -4,7 +4,8 @@
     "description": "A digital platform where files can be easily accessed and downloaded remotely.",
     "main": "dist/index.js",
     "scripts": {
-        "start": "nodemon index.ts",
+        "start": "cd client && npm run build && cd ../ && npm run build && node dist/index.js",
+        "dev": "nodemon index.ts",
         "test": "jest",
         "build": "tsc",
         "clean": "rimraf dist",

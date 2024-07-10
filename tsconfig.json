@@ -1,5 +1,8 @@
 {
-    "exclude": ["node_modules", "dist", "jest.config.js", "__test__"],
+    "exclude": [
+      "node_modules", "dist", "jest.config.js",
+      "__test__", "client"
+    ],
   
     "compilerOptions": {
         "outDir": "dist",
@@ -17,7 +20,8 @@
     "include": [
       "**/*.ts",
       "package.json",
-      "package-lock.json"  
+      "package-lock.json",
+      "logs.txt",
     ]
   }
   
