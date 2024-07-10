@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken'
 import {Users, type UserType } from '../../models/Users'
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
+import { JWT_SECRET } from '../../utils/constants';
 
 const expiry = 1000 * 60 * 60 * 24 * 7; // 7 days inactivity expiry
-const JWT_SECRET = process.env.JWT_SECRET;
 
 
 export const Login = async (request: Request,response: Response)=>{

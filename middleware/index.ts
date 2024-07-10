@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import { ReesponseCodes } from '../utils/response_codes';
 import { TryCatch } from '../utils/trycatch';
 import { Users } from '../models/Users';
-import { JWT_SECRET } from '../utils/index';
+import { JWT_SECRET } from '../utils/constants';
 
 // Validates login and sinup form  inputs
 export const authValidation = [
