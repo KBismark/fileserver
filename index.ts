@@ -9,6 +9,7 @@ import { connectToDatabase } from './db-connection';
 import { authRouter } from './routes/auth';
 import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
+import { adminRouter } from './routes/admin';
 
 const PORT = process.env.PORT||3034;
 const IS_DEVELOPMENT = process.env.ENV_STRING==='development';
@@ -57,6 +58,9 @@ app.use('/', express.static(publicContentDir));
 
 // Mount authentication route
 app.use('/auth', authRouter);
+
+// Mount adim route
+app.use('/admin', adminRouter);
 
 // handle access to the content page
 app.get('/content', authenticateRequest, (req, res)=>{
