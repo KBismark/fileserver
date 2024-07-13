@@ -17,6 +17,7 @@ import { ReesponseCodes } from './utils/response_codes';
 import { TryCatch } from './utils/trycatch';
 import { Uploader } from './models/Content';
 import { sendMail } from './utils';
+import { SearchFile } from './routes/data/Search';
 
 
 // App exported 
@@ -135,7 +136,10 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
 })
 
 // Get data to populate content page
-app.get('/resource/data', authenticateRequest, PageData)
+app.get('/resource/data', authenticateRequest, PageData);
+
+// Search file
+app.get('/resource/search', authenticateRequest, SearchFile)
 
 // serve files as static contents
 app.use('/files', express.static(filesDir));
