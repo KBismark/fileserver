@@ -13,6 +13,9 @@ import { adminRouter } from './routes/admin';
 import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
 import { databaseConnection, publicContentDir } from './db-connection';
 import { ReesponseCodes } from './utils/response_codes';
+import { TryCatch } from './utils/trycatch';
+import { Uploader } from './models/Content';
+import { sendMail } from './utils';
 
 
 // App exported 
@@ -47,7 +50,7 @@ app.get('/', authenticateRequest, (req, res)=>{
     serveBaseUrl(res)
 });
 
-app.get(['/auth/reset'],(req, res, next)=>{
+app.get(['/auth/reset','/admin'],(req, res, next)=>{
     // Serves reset page
     (req as any).serveBaseUrl = serveBaseUrl;
    next();
@@ -62,19 +65,76 @@ app.get('/content', authenticateRequest, (req, res)=>{
     res.redirect('/');
 })
 
-// handle access to the admin page
-app.get('/admin', authenticateRequest, (req, res)=>{
-    if((req as any).user_authenticated){
-        if((req as any).user_id!==ADMIN_ACCOUNT){
-            // Only admin accounts get to access route: /admin
-            return  res.clearCookie('auth', {path: '/'}).redirect('/');
+
+
+// Serve the downloadable files
+app.get('/download/:filename', (req, res)=>{
+    const filename = req.params.filename;
+    // User is authenticated. Serve file
+    return res.download(join(publicContentDir, `/files/${filename}`), filename, (err) => {
+        if (err) {
+            return res.status(ReesponseCodes.notFound).end();
         }
-        // User is authenticated. Serve page
-       return serveBaseUrl(res)
-    }
-    res.redirect('/');
+    });
+    
 })
 
+// Update file download count and return current counts
+app.get('/file_count/download/:file_id', authenticateRequest, async (req, res)=>{
+    if((req as any).user_authenticated){
+        const file_id = req.params.file_id;
+        const {result, errored} = await TryCatch(async ()=>{
+            return await Uploader.findOneAndUpdate(
+                {_id: file_id }, 
+                { $inc: {downloadCount: 1}}, 
+                {new: true, projection: {shareCount: 1, downloadCount: 1} }
+            )
+        });
+        if(result){
+            console.log(result);
+            
+            return res.status(ReesponseCodes.created).json(result);
+        }
+        return res.status(ReesponseCodes.notFound).end();
+    }
+    return res.status(ReesponseCodes.badRequest).end();
+});
+
+// Update fileshare count and return current counts
+app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, res)=>{
+    if((req as any).user_authenticated){
+        const user_id = (req as any).user_id;
+        const file_id = req.params.file_id;
+        const email = req.params.email;
+        const {result, errored} = await TryCatch(async ()=>{
+            return await Uploader.findOneAndUpdate(
+                {_id: file_id }, 
+                { $inc: {shareCount: 1}}, 
+                {new: true, projection: {shareCount: 1, downloadCount: 1, suffix: 1} }
+            )
+        });
+        if(result){
+            console.log(result);
+            res.status(ReesponseCodes.created).json(result);
+            // Send email containing the link to download the file
+            const link = `${req.protocol}://${req.get('host')}/download/${file_id}.${(result as any).suffix}`;
+            return sendMail({
+                to: email,
+                subject: 'FILESERVER - SHARED FILE',
+                html: `<body style="padding: 20px 10px;"><h2 style="color:rgb(30, 199, 72);">Hello Dear,</h2>`+
+                `<p>Someone (${user_id}) shared a file with you. Click on the link below to access it. </p><a href="${link}">${link}</a>`+
+                `<br/><br/>Regards,<br/><br/>Bismark Yamoah`+
+                `<br/>(Software Engineer)<br/><strong>KBismark Development</strong></body>`
+            },(err, data)=>{
+                if(err){}
+            }); 
+        }
+        return res.status(ReesponseCodes.notFound).end();
+    }
+    return res.status(ReesponseCodes.badRequest).end();
+})
+
+// Get data to populate content page
 app.get('/resource/data', authenticateRequest, PageData)
 
 // serve static files
