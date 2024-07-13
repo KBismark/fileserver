@@ -121,6 +121,7 @@ export const ShareTo = ()=>{
         .then((response)=>{
             response.json()
             .then((data)=>{
+                alert(`File was shared successfully to ${email}.`);
                 callback(data);
                 setRequest(false);
                 updateStore<UI>('datastore', 'ui', {
@@ -159,7 +160,17 @@ export const ShareTo = ()=>{
               requesting?
               <span className='spinner'></span>:
               <>
-                <h2 style={{marginLeft: 15}}>Share to?</h2>
+               <div style={{display: 'flex',alignItems: 'center', justifyContent: 'center'}}>
+                    <h2 style={{marginLeft: 15}}>Share to?</h2>
+                    <span onClick={()=>{
+                        updateStore<UI>('datastore', 'ui', {
+                            actors: ['shareFile'],
+                            store: {shareFile: false, callback(){}, fileId: ''}
+                        })
+                    }} style={{color: 'rgb(30, 199, 72)', cursor: 'pointer'}}>
+                     {' Go back'}
+                    </span>
+               </div>
                 <div style={{textAlign: 'center',height: 150}} className='auth-card-container'>
                     <label>
                             <input ref={ref_1}  name="email" type="email" maxLength={100} placeholder="email@example.com" />
