@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {configureForReact, createStore} from 'statestorejs'
-import logo from './logo.svg';
 import './App.css';
 import { CardProps, FileCards } from './components/filecard';
-import example_img from './assets/example_img.jpg'
-import example_doc from './assets/example_doc.png'
 import { Header, serverUrl } from './components/head';
 import { Login, type SiteData } from './components/auth';
 import { Upload } from './components/fileupload';
@@ -76,7 +73,7 @@ function App() {
           {
             (isContentPage&&contentData.email.length>1)&&
             contentData.content.map((file)=>{
-              return  <FileCards img={file.type==='doc'?example_doc:file.img} title={file.title} description={file.description} />
+              return  <FileCards key={file.id} {...file} />
             })
           }
         </main>
