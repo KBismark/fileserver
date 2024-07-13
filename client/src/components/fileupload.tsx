@@ -119,7 +119,7 @@ export const Upload = ()=>{
                     <span onClick={()=>{
                         window.location.assign(`${window.location.origin}/content?r=1`)
                     }} style={{color: 'rgb(30, 199, 72)', cursor: 'pointer'}}>
-                        here.
+                     {' here.'}
                     </span>
                 </div>
             </div>
