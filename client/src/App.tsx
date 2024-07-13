@@ -74,7 +74,7 @@ function App() {
           {
             (isContentPage&&contentData.email.length>1)&&
             contentData.content.map((file)=>{
-              return  <FileCards key={file.id} {...file} />
+              return  <FileCards key={file.id} {...file} isAdmin={contentData.email==='admin@fileserver.com'}  />
             })
           }
         </main>

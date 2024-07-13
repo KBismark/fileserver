@@ -6,12 +6,12 @@ import { updateStore, useStateStore } from 'statestorejs';
 
 export type CardProps = {
     title: string; img: string; type?: 'image'|'doc', description: string;
-    downloadCount: number; shareCount: number; id: string;
+    downloadCount: number; shareCount: number; id: string; isAdmin?:boolean
 }
 export const FileCards = ({ 
     title, type, img,
     description, downloadCount,
-    shareCount, id
+    shareCount, id, isAdmin
 }: CardProps)=>{
     const [share, setShare] = useState(shareCount);
     const [download, setDownload] = useState(downloadCount);
@@ -46,19 +46,22 @@ export const FileCards = ({
         <div className="card-container">
             <img src={type==='image'?img:example_doc} style={{margin: '5%', width: '90%'}} />
             <div className="card-content">
-                <div style={{marginTop: 10}}>
-                    <span style={{
-                        backgroundColor: 'rgb(0, 255, 76, .39)',
-                        padding: '3px 10px 4px 10px', fontWeight: 500,
-                        borderRadius: '15px', fontSize: '90%'
-                    }}> {download} downloads </span>
-                    <span style={{
-                        marginLeft: 20, backgroundColor: '#00ffff80',
-                        padding: '3px 10px 4px 10px', fontWeight: 500, borderRadius: '15px',
-                        fontSize: '90%'
-                    }}>{share} shares</span>
-                </div>
-                <h3 style={{marginTop: 5, marginBottom: 8}}>{title.slice(0, 110)}</h3>
+                {
+                    isAdmin&&
+                    <div style={{marginTop: 10}}>
+                        <span style={{
+                            backgroundColor: 'rgb(0, 255, 76, .39)',
+                            padding: '3px 10px 4px 10px', fontWeight: 500,
+                            borderRadius: '15px', fontSize: '90%'
+                        }}> {download} downloads </span>
+                        <span style={{
+                            marginLeft: 20, backgroundColor: '#00ffff80',
+                            padding: '3px 10px 4px 10px', fontWeight: 500, borderRadius: '15px',
+                            fontSize: '90%'
+                        }}>{share} shares</span>
+                    </div>
+                }
+                <h3 style={{marginTop: isAdmin?15:5, marginBottom: isAdmin?10:8}}>{title.slice(0, 110)}</h3>
                 <p>{description.length>150?`${description.slice(0, 150).trim()}...`:description}</p>
                 <div className="card-heading">
                     {/* <div></div> */}
