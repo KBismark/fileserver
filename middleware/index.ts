@@ -72,7 +72,7 @@ const long_expiry = 1000 * 60 * 60 * 24 * 7; // 7 days. Require mandatory re-log
 // Authenticates and refreshes user sessions
 export const authenticateRequest = async (req: Request, res: Response, next: NextFunction)=>{
   if(!req.cookies||!req.cookies.auth){
-    (req as any).authenticated = false;
+    (req as any).user_authenticated = false;
     return next()
   }
   
