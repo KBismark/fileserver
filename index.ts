@@ -1,3 +1,4 @@
+import {readdirSync} from 'fs'
 import express, {Response} from 'express';
 import cors from 'cors'
 import bodyParser from 'body-parser'
@@ -139,6 +140,9 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
 app.get('/resource/data', authenticateRequest, PageData)
 
 console.log(join(rootDir, '/files'));
+const filess = readdirSync(join(__dirname, '/files'),'utf8');
+console.log(filess);
+
 
 // serve files as static contents
 app.use('/files', (req, res, next)=>{
