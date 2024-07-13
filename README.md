@@ -31,8 +31,13 @@ To access the application as the admin, sign in with the following details:
 
 **Password**: `12345678`    
 
+## ER Diagram of Database Design
+The database used in this project is MongoDB. The ER below represents the two collections used for this project. The Users colection is used for storing data related 
+to registerd users and the Files collection is used for storing uploaded files' related data.    
 
-## Implementations
+![Entity Relation Diagram](./entity-relation.png)    
+
+## Implementation
 - Backend language: Nodejs    
 
 - Framework: Expressjs    
