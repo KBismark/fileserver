@@ -6,15 +6,13 @@ import multer from 'multer';
 import {GridFsStorage} from 'multer-gridfs-storage';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { getVerificationCode, sendMail } from '../../utils/index';
-import { DB_CONNECTION_STRING, IS_DEVELOPMENT } from '../../utils/constants';
-import { databaseConnection, publicContentDir, rootDir } from '../../db-connection';
+import { databaseConnection, filesDir, publicContentDir, rootDir } from '../../db-connection';
 import { Uploader } from '../../models/Content'
 
 
 // Use file storage for storing files
 const storage = multer.diskStorage({
-  destination: join(rootDir, '/files'),
+  destination: filesDir,
   filename(req, file, callback) {
     const random = `${Math.random()}`.slice(3);
     const filename = `${random}${Date.now()}`;
@@ -49,7 +47,7 @@ export const Upload = (request: Request, response: Response)=>{
           request.body.description.length<1
         ){
           // Delete file since request source can't be trusted
-          unlink(join(rootDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
+          unlink(join(filesDir, `/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
           return respondToUnSuccessful(response)
         }
 
@@ -73,7 +71,7 @@ export const Upload = (request: Request, response: Response)=>{
         }else{
           response.status(ReesponseCodes.notFound).end();
           // Delete file since operations were not complete
-          unlink(join(rootDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
+          unlink(join(filesDir, `/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
         }
     })
 };

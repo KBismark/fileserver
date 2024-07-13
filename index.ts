@@ -12,7 +12,7 @@ import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
 import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
-import { databaseConnection, publicContentDir, rootDir } from './db-connection';
+import { databaseConnection, filesDir, publicContentDir, rootDir } from './db-connection';
 import { ReesponseCodes } from './utils/response_codes';
 import { TryCatch } from './utils/trycatch';
 import { Uploader } from './models/Content';
@@ -139,8 +139,8 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
 // Get data to populate content page
 app.get('/resource/data', authenticateRequest, PageData)
 
-console.log(join(rootDir, '/files'));
-const filess = readdirSync(join(__dirname, '/files'),'utf8');
+console.log(filesDir);
+const filess = readdirSync(filesDir,'utf8');
 console.log(filess);
 
 
@@ -149,7 +149,7 @@ app.use('/files', (req, res, next)=>{
     console.log(req.url);
     
     next();
-}, express.static(join(rootDir, '/files')));
+}, express.static(filesDir));
 
 // serve static files
 app.use('/', express.static(publicContentDir));
