@@ -11,7 +11,7 @@ import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
 import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
-import { databaseConnection, publicContentDir } from './db-connection';
+import { databaseConnection, publicContentDir, rootDir } from './db-connection';
 import { ReesponseCodes } from './utils/response_codes';
 import { TryCatch } from './utils/trycatch';
 import { Uploader } from './models/Content';
@@ -33,7 +33,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // Logs application access to a log.txt file
 const writableStream = createWriteStream(join(__dirname, '/logs.txt'), { flags: 'a' });
-app.use(['/auth/:route', '/content', '/resource/:route', '/admin/:route'], morgan('combined', { stream: writableStream }));
+app.use([
+    '/auth/:route', '/content', 
+    '/resource/:route', '/admin/:route',
+    '/files'
+], morgan('combined', { stream: writableStream }));
 
 
 const serveBaseUrl = (res: any)=>{
@@ -70,8 +74,8 @@ app.get('/content', authenticateRequest, (req, res)=>{
 // Serve the downloadable files
 app.get('/download/:filename', (req, res)=>{
     const filename = req.params.filename;
-    // User is authenticated. Serve file
-    return res.download(join(publicContentDir, `/files/${filename}`), filename, (err) => {
+    // Serve file to be downloaded
+    return res.download(join(rootDir, `/files/${filename}`), filename, (err) => {
         if (err) {
             return res.status(ReesponseCodes.notFound).end();
         }
@@ -91,8 +95,6 @@ app.get('/file_count/download/:file_id', authenticateRequest, async (req, res)=>
             )
         });
         if(result){
-            console.log(result);
-            
             return res.status(ReesponseCodes.created).json(result);
         }
         return res.status(ReesponseCodes.notFound).end();
@@ -114,7 +116,6 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
             )
         });
         if(result){
-            console.log(result);
             res.status(ReesponseCodes.created).json(result);
             // Send email containing the link to download the file
             const link = `${req.protocol}://${req.get('host')}/download/${file_id}.${(result as any).suffix}`;
@@ -136,6 +137,9 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
 
 // Get data to populate content page
 app.get('/resource/data', authenticateRequest, PageData)
+
+// serve files as static contents
+app.use('/files', express.static(join(rootDir, '/files')));
 
 // serve static files
 app.use('/', express.static(publicContentDir));

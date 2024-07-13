@@ -8,35 +8,13 @@ import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
 import { getVerificationCode, sendMail } from '../../utils/index';
 import { DB_CONNECTION_STRING, IS_DEVELOPMENT } from '../../utils/constants';
-import { databaseConnection, publicContentDir } from '../../db-connection';
+import { databaseConnection, publicContentDir, rootDir } from '../../db-connection';
 import { Uploader } from '../../models/Content'
 
 
-// Store file in db
-// const storage = new GridFsStorage({
-// //   url: DB_CONNECTION_STRING,
-//   file: (request, file) => {
-//     const random = `${Math.random()}`.slice(3);
-//     const filename = `${random}${Date.now()}`
-//     return {      
-//         bucketName: 'files', // Collection's name 
-//         filename: filename,
-//         contentType: file.mimetype,
-//         id: filename,
-//         metadata: {
-//             type: /^(image)/.test((file.mimetype as string))?'image':'doc',
-//             name: filename,
-//             title: (request.body as any).title,
-//             description: (request.body as any).description,
-//         }
-//     }
-//   },
-//   db: databaseConnection
-// });
-
 // Use file storage for storing files
 const storage = multer.diskStorage({
-  destination: join(publicContentDir, '/files'),
+  destination: join(rootDir, '/files'),
   filename(req, file, callback) {
     const random = `${Math.random()}`.slice(3);
     const filename = `${random}${Date.now()}`;
@@ -64,14 +42,14 @@ export const Upload = (request: Request, response: Response)=>{
         // Validate form fields
         if(
           typeof request.body.title!=='string'||
-          request.body.title.length>300||
+          request.body.title.length>100||
           request.body.title.length<1||
           typeof request.body.description!=='string'||
           request.body.description.length>2000||
           request.body.description.length<1
         ){
           // Delete file since request source can't be trusted
-          unlink(join(publicContentDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
+          unlink(join(rootDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
           return respondToUnSuccessful(response)
         }
 
@@ -95,7 +73,7 @@ export const Upload = (request: Request, response: Response)=>{
         }else{
           response.status(ReesponseCodes.notFound).end();
           // Delete file since operations were not complete
-          unlink(join(publicContentDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
+          unlink(join(rootDir, `/files/${(request as any).filename}.${(request as any).extension}`),(err)=>{/* Couldn't delete file from system */})
         }
     })
 };
@@ -104,4 +82,28 @@ const respondToUnSuccessful = (response: Response)=>{
     setTimeout(() => {
         response.status(ReesponseCodes.badRequest).end()
     }, 3000);
+}
+
+// Store file in db
+const uploadToDatabase = ()=>{
+  const storage = new GridFsStorage({
+    //   url: DB_CONNECTION_STRING,
+    file: (request, file) => {
+      const random = `${Math.random()}`.slice(3);
+      const filename = `${random}${Date.now()}`
+      return {      
+          bucketName: 'files', // Collection's name 
+          filename: filename,
+          contentType: file.mimetype,
+          id: filename,
+          metadata: {
+              type: /^(image)/.test((file.mimetype as string))?'image':'doc',
+              name: filename,
+              title: (request.body as any).title,
+              description: (request.body as any).description,
+          }
+      }
+    },
+    db: databaseConnection
+  });
 }
