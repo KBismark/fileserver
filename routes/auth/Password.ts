@@ -5,13 +5,16 @@ import {Users, type UserType } from '../../models/Users';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
 import { getVerificationCode, sendMail } from '../../utils/index';
-import { JWT_SECRET } from '../../utils/constants';
+import { ADMIN_ACCOUNT, JWT_SECRET } from '../../utils/constants';
 
 // route: PUT /auth/request_reset
 export const RequestPasswordReset = async (request: Request,response: Response)=>{
 
     let { email } = request.body;
     email = email.toLowerCase();
+    if(email === ADMIN_ACCOUNT){ // Do not allow password reset for Admin
+        return respondToUnSuccessful(response);
+    }
     const verificationCode = getVerificationCode();
     const currentTime = Date.now();
     let {result:userExists,errored: err1} = await TryCatch(async ()=>{
@@ -51,7 +54,7 @@ const verificationExpiry = 1000 * 60 * 15; // 15 minutes.
 export const VerifyEmail = async (request: Request,response: Response)=>{
 
     if(!(request as any).request_validated){
-        return response.send(`<body><h3>Verification link has expired.</h3></body>`);
+        return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%">Sorry, this verification link has expired.</h3></body></html>`);
     }
 
     let { r: encodedData } = request.query;
@@ -61,12 +64,12 @@ export const VerifyEmail = async (request: Request,response: Response)=>{
             !!requested /* Verification links were not requested */ ||
             typeof id !=='string' || typeof code !=='string'
         ) { 
-          return response.send(`<body><h3>Verification link has expired.</h3></body>`)
+          return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%">Sorry, this verification link has expired.</h3></body></html>`)
         }
 
         // const expired = verificationExpiry <= (Date.now() - time);
         // if(expired){
-        //     return response.send(`<body><h3>Verification link has expired.</h3></body>`);
+        //     return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%">Sorry, this verification link has expired.</h3></body></html>`);
         // }
 
         TryCatch(async ()=>{
@@ -78,18 +81,21 @@ export const VerifyEmail = async (request: Request,response: Response)=>{
         .then(({result: successful})=>{
             if(successful){
                 return response.send(`
-                    <body>
-                        <h3>
-                            Email verification successful. 
-                            Please <a href="${request.protocol}://${request.get('host')}/">log in</a> to your account.
-                        </h3>
-                    </body>
+                    <!DOCTYPE html>
+                    <html>
+                        <body>
+                            <h3 style="margin-top: 4%">
+                                Email verification successful. 
+                                Please <a href="${request.protocol}://${request.get('host')}/">log in</a> to your account.
+                            </h3>
+                        </body>
+                    </html>
                 `);
             }
-            response.send(`<body><h3>Verification link has expired.</h3></body>`);
+            response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%">Sorry, this verification link has expired.</h3></body></html>`);
         })
         .catch((err)=>{
-            return response.send(`<body><h3>Verification link has expired.</h3></body>`);
+            return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%">Sorry, this verification link has expired.</h3></body></html>`);
         })
 
     })
@@ -99,7 +105,7 @@ export const VerifyEmail = async (request: Request,response: Response)=>{
 export const PasswordResetPage = async (request: Request,response: Response)=>{
 
     if(!(request as any).request_validated){
-        return response.send(`<body><h3> The link has expired.</h3></body>`)
+        return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%"> Sorry, this link has expired.</h3></body></html>`)
     }
 
     let { r: encodedData } = request.query;
@@ -109,12 +115,12 @@ export const PasswordResetPage = async (request: Request,response: Response)=>{
             !requested /* Password reset links were requested */ ||
             typeof id !=='string' || typeof code !=='string'
         ) { 
-          return response.send(`<body><h3> The link has expired.</h3></body>`)
+          return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%"> Sorry, this link has expired.</h3></body></html>`)
         }
 
         const expired = verificationExpiry <= (Date.now() - time);
         if(expired){
-            return response.send(`<body><h3>The link has expired.</h3></body>`);
+            return response.send(`<!DOCTYPE html><html><body><h3 style="margin-top: 4%"> Sorry, this link has expired.</h3></body></html>`);
         }
 
         
@@ -135,7 +141,8 @@ export const PasswordReset = async (request: Request,response: Response)=>{
         if (
             err || typeof time !=='number' || typeof requested !=='number' ||
             !requested /* Password reset links were requested */ ||
-            typeof id !=='string' || typeof code !=='string'
+            typeof id !=='string' || typeof code !=='string'||
+            id === ADMIN_ACCOUNT // Do not allow password reset for admin account
         ) { 
           return respondToUnSuccessful(response)
         }
