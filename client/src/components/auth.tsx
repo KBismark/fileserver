@@ -42,7 +42,6 @@ export type SiteData = {
     }
   }
 export const Login = ({resetPassword, passwordResetData}: {resetPassword?:boolean, passwordResetData?:string})=>{
-    // const { email } = useStateStore<SiteData>('datastore', 'site', []);
     const [formType, setFormType] = useState<'sign_in'|'sign_up'|'forgot'|'reset'>(resetPassword?'reset':'sign_in');
     const [alert, setAlert] = useState({alert: !true, message: ''});
     const [requsting, setRequestStatus] = useState(false)

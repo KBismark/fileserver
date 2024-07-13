@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {configureForReact, createStore} from 'statestorejs'
 import './App.css';
-import { CardProps, FileCards } from './components/filecard';
+import { CardProps, FileCards, ShareTo, UI } from './components/filecard';
 import { Header, serverUrl } from './components/head';
 import { Login, type SiteData } from './components/auth';
 import { Upload } from './components/fileupload';
@@ -10,6 +10,7 @@ configureForReact(React);
 
 
 createStore<SiteData>('datastore', 'site', {email: '', loggedIn: false, files: []});
+createStore<UI>('datastore', 'ui', {callback(){}, fileId:'', shareFile: false});
 
 function App() {
   let pathname = `${window.location.pathname}`.toLowerCase();
@@ -99,6 +100,7 @@ function App() {
           }
         </div>
       }
+      <ShareTo />
     </div>
   );
 }

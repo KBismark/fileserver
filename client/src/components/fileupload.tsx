@@ -45,7 +45,7 @@ export const Upload = ()=>{
         if(!description){
             setRequestStatus(false);
             return setAlert({alert: true, message: 'File description field cannot be empty.'})
-        }else if(description.length<2000){
+        }else if(description.length>2000){
             setRequestStatus(false);
             return setAlert({alert: true, message: 'File description field cannot exceed 2000 characters.'})
         }
