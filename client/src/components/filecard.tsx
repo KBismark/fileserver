@@ -1,7 +1,7 @@
 import './filecard.css';
 import example_doc from '../assets/example_doc.png'
 import { serverUrl } from './head';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { updateStore, useStateStore } from 'statestorejs';
 
 export type CardProps = {
@@ -92,7 +92,15 @@ export type UI = {
 export const ShareTo = ()=>{
     const { shareFile, callback, fileId } = useStateStore<UI>('datastore', 'ui', ['shareFile']);
     const ref_1 = useRef<HTMLInputElement>(null);
-    const [requesting, setRequest] = useState(false)
+    const [requesting, setRequest] = useState(false);
+    useEffect(()=>{
+        if(shareFile){
+            document.body.style.overflow = 'hidden';
+        }
+        return ()=>{
+            document.body.style.overflow = '';
+        }
+    },[shareFile])
     if(!shareFile) return null;
     const onShare = ()=>{
         if(requesting) return;
@@ -112,6 +120,10 @@ export const ShareTo = ()=>{
             .then((data)=>{
                 callback(data);
                 setRequest(false);
+                updateStore<UI>('datastore', 'ui', {
+                    actors: ['shareFile'],
+                    store: {shareFile: false, callback(){}, fileId: ''}
+                })
             })
             .catch((err)=>{
                 alert(`Sorry, can't share now.`);
@@ -133,7 +145,7 @@ export const ShareTo = ()=>{
     }
     return (
         <div style={{
-            position: 'absolute',top: 0, 
+            position: 'fixed',top: 0, 
             left: 0, right: 0, bottom: 0, 
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
