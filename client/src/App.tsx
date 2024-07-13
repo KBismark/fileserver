@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import {configureForReact, createStore, updateStore, useStateStore} from 'statestorejs'
 import './App.css';
 import { CardProps, FileCards, ShareTo, UI } from './components/filecard';
-import { Header, serverUrl, type SiteData } from './components/head';
+import { Header, pathname, serverUrl, type SiteData } from './components/head';
 import { Login } from './components/auth';
 import { Upload } from './components/fileupload';
 
@@ -13,7 +13,6 @@ createStore<SiteData>('datastore', 'site', {email: '', content: [], search: ''})
 createStore<UI>('datastore', 'ui', {callback(){}, fileId:'', shareFile: false});
 
 function App() {
-  const pathname = useState(`${window.location.pathname}`.toLowerCase())[0];
   const contentData = useStateStore<SiteData>('datastore', 'site', ['email']);
   const [fetchErrored, setFetchError] = useState<boolean>(false);
   const [isFetching, setFetch] = useState<boolean>(false);

@@ -1,11 +1,12 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import './header.css'
-import { updateStore } from 'statestorejs';
-import { type CardProps } from './filecard';
+import { updateStore, useStateStore } from 'statestorejs';
+import { UI, type CardProps } from './filecard';
 
 export type SiteData = {email: string; content: CardProps[], search: string };
 export const serverUrl = window.location.origin;
+export const pathname = `${window.location.pathname}`.toLowerCase();
 const screenWidth = window.innerWidth;
 type Props = {email: string}
 export const Header = ({email}: Props)=>{
@@ -15,6 +16,10 @@ export const Header = ({email}: Props)=>{
     const [resizeTiming, setResizeTiming] = useState<any>(undefined);
     const [smallScreen, setScreen] = useState(screenWidth<600);
     const ref_1 = useRef<HTMLInputElement>(null);
+    const {shareFile} = useStateStore<UI>('datastore', 'ui', ['shareFile']);
+    const isAdmin = pathname === '/admin'
+    const showSearch = !(isAdmin||shareFile);
+
     useEffect(()=>{
         return ()=>{
             clearTimeout(timing)
@@ -97,7 +102,7 @@ export const Header = ({email}: Props)=>{
         <header className="header">
             { (!searchOn||!smallScreen)&&<div style={{fontWeight: 500,}}>Hi, {email}</div> }
             {
-                (searchOn||!smallScreen)&&
+                (searchOn||!smallScreen)&&showSearch&&
                 <label>
                     <input ref={ref_1} onKeyUp={onSearch} onChange={onBlur} onBlur={onBlur} name="r" type="search" maxLength={100} placeholder="Search for files" />
                 </label>
@@ -106,7 +111,7 @@ export const Header = ({email}: Props)=>{
             <div className='flex-center'>
                 <div>
                     {
-                        (!searchOn&&smallScreen)&&
+                        (!searchOn&&smallScreen&&showSearch)&&
                         <div tabIndex={0} role='button' className='search-button flex-center' onClick={()=>{
                             setSearchStatus(true)
                         }} >
