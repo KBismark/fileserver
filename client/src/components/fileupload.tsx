@@ -114,6 +114,14 @@ export const Upload = ()=>{
                 <div className="card-button">
                     <button onClick={onSubmit} style={{maxWidth: 400}}>{requsting?'Please wait...':'Upload'}</button>
                 </div>
+                <div style={{marginTop: 20}}>
+                    See uploaded content 
+                    <span onClick={()=>{
+                        window.location.assign(`${window.location.origin}/content?r=1`)
+                    }} style={{color: 'rgb(30, 199, 72)', cursor: 'pointer'}}>
+                        here.
+                    </span>
+                </div>
             </div>
         </div>
     )
