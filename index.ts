@@ -75,8 +75,25 @@ app.get('/content', authenticateRequest, (req, res)=>{
 // Serve the downloadable files
 app.get('/download/:filename', (req, res)=>{
     const filename = req.params.filename;
+    const fromEmail = req.query.r||'';
+    if(fromEmail){
+        const link = `${req.protocol}://${req.get('host')}/download/${filename}`;
+        return res.send(
+            `<!DOCTYPE html><html lang="en">
+            <head>
+                <script>
+                    window.onload=function(){
+                        window.location.assign('${link}');
+                    }
+                </script>
+            </head>
+            <body></body>
+            </html>
+            `
+        )
+    }
     // Serve file to be downloaded
-    return res.download(join(rootDir, `/files/${filename}`), filename, (err) => {
+    return res.download(join(filesDir, `/${filename}`), filename, (err) => {
         if (err) {
             return res.status(ReesponseCodes.notFound).end();
         }
@@ -119,7 +136,7 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
         if(result){
             res.status(ReesponseCodes.created).json(result);
             // Send email containing the link to download the file
-            const link = `${req.protocol}://${req.get('host')}/download/${file_id}.${(result as any).suffix}`;
+            const link = `${req.protocol}://${req.get('host')}/download/${file_id}.${(result as any).suffix}?r=email`;
             return sendMail({
                 to: email,
                 subject: 'FILESERVER - SHARED FILE',
