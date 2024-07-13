@@ -139,17 +139,8 @@ app.get('/file_count/share/:file_id/:email', authenticateRequest, async (req, re
 // Get data to populate content page
 app.get('/resource/data', authenticateRequest, PageData)
 
-console.log(filesDir);
-const filess = readdirSync(filesDir,'utf8');
-console.log(filess);
-
-
 // serve files as static contents
-app.use('/files', (req, res, next)=>{
-    console.log(req.url);
-    
-    next();
-}, express.static(filesDir));
+app.use('/files', express.static(filesDir));
 
 // serve static files
 app.use('/', express.static(publicContentDir));
