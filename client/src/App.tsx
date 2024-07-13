@@ -6,7 +6,8 @@ import { CardProps, FileCards } from './components/filecard';
 import example_img from './assets/example_img.jpg'
 import example_doc from './assets/example_doc.png'
 import { Header, serverUrl } from './components/head';
-import { Login, Upload, type SiteData } from './components/auth';
+import { Login, type SiteData } from './components/auth';
+import { Upload } from './components/fileupload';
 
 configureForReact(React);
 
