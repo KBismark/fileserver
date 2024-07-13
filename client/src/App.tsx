@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import {configureForReact, createStore} from 'statestorejs'
+import React, { memo, useEffect, useState } from 'react';
+import {configureForReact, createStore, updateStore, useStateStore} from 'statestorejs'
 import './App.css';
 import { CardProps, FileCards, ShareTo, UI } from './components/filecard';
-import { Header, serverUrl } from './components/head';
-import { Login, type SiteData } from './components/auth';
+import { Header, serverUrl, type SiteData } from './components/head';
+import { Login } from './components/auth';
 import { Upload } from './components/fileupload';
 
 configureForReact(React);
 
 
-createStore<SiteData>('datastore', 'site', {email: '', loggedIn: false, files: []});
+createStore<SiteData>('datastore', 'site', {email: '', content: [], search: ''});
 createStore<UI>('datastore', 'ui', {callback(){}, fileId:'', shareFile: false});
 
 function App() {
-  let pathname = `${window.location.pathname}`.toLowerCase();
-  const isContentPage = pathname==='/content';
-  const [contentData, setData] = useState<{email: string; content: CardProps[] }>({email: '', content: []});
+  const pathname = useState(`${window.location.pathname}`.toLowerCase())[0];
+  const contentData = useStateStore<SiteData>('datastore', 'site', ['email']);
   const [fetchErrored, setFetchError] = useState<boolean>(false);
   const [isFetching, setFetch] = useState<boolean>(false);
+  const isContentPage = pathname==='/content';
   const isResetPassword = pathname === '/auth/reset';
   const isAdmin = pathname === '/admin'
   const authData = (new URL(window.location.href)).searchParams.get('r')||'';
+
   useEffect(()=>{
     if(isContentPage){
       fetchData()
@@ -39,7 +40,10 @@ function App() {
           .then((data)=>{
             setFetch(false);
             setFetchError(false)
-            setData(data);
+            updateStore<SiteData>('datastore', 'site', {
+              store: data,
+              actors: ['email']
+            })
           })
           .catch((err)=>{
             setTimeout(() => {
@@ -72,10 +76,7 @@ function App() {
           }
           {isAdmin&&<Upload />}
           {
-            (isContentPage&&contentData.email.length>1)&&
-            contentData.content.map((file)=>{
-              return  <FileCards key={file.id} {...file} isAdmin={contentData.email==='admin@fileserver.com'}  />
-            })
+            (isContentPage&&contentData.email.length>1)&&<ContentPageData email={contentData.email} />
           }
         </main>
       {/* </div> */}
@@ -104,5 +105,32 @@ function App() {
     </div>
   );
 }
+
+
+
+const ContentPageData = memo(({email}: {email: string})=>{
+  const {content, search} = useStateStore<SiteData>('datastore', 'site', ['search'])
+  return (
+    <>
+    {
+      content.filter((file)=>{
+        return file.title.toLowerCase().includes(search)||file.description.toLowerCase().includes(search)
+      }).map((file)=>{
+        return  <FileCards key={file.id} {...file} isAdmin={email==='admin@fileserver.com'}  />
+      })
+    }
+    </>
+  )
+})
+
+
+
+
+
+
+
+
+
+
 
 export default App;
