@@ -66,20 +66,6 @@ export const passwordResetValidation = [
   }
 ];
 
-export const uploadValidation = [
-  body('title').isString().trim().isLength({min:1,max:300}).withMessage({field: 'title'}),
-  body('description').isString().trim().isLength({min:1,max:2000}).withMessage({field: 'description'}),
-  (req: Request, res: Response, next: NextFunction)=>{
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return setTimeout(() => {
-        res.status(ReesponseCodes.unathourized).end();
-      }, 3000);
-    }
-    next();
-  }
-];
-
 const expiry = 1000 * 60 * 20; // 20 minutes. Short expiry to keep user sessions
 const long_expiry = 1000 * 60 * 60 * 24 * 7; // 7 days. Require mandatory re-login after 7 days of inactivity
 
