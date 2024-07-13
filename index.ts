@@ -70,28 +70,9 @@ app.get('/content', authenticateRequest, (req, res)=>{
     res.redirect('/');
 })
 
-
-
 // Serve the downloadable files
 app.get('/download/:filename', (req, res)=>{
     const filename = req.params.filename;
-    const fromEmail = req.query.r||'';
-    if(fromEmail){
-        const link = `${req.protocol}://${req.get('host')}/download/${filename}`;
-        return res.send(
-            `<!DOCTYPE html><html lang="en">
-            <head>
-                <script>
-                    window.onload=function(){
-                        window.location.assign('${link}');
-                    }
-                </script>
-            </head>
-            <body></body>
-            </html>
-            `
-        )
-    }
     // Serve file to be downloaded
     return res.download(join(filesDir, `/${filename}`), filename, (err) => {
         if (err) {
