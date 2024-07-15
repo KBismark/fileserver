@@ -1,5 +1,5 @@
 import {readdirSync} from 'fs'
-import express, {Response} from 'express';
+import express, {Response, Request} from 'express';
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -12,7 +12,7 @@ import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
 import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
-import { databaseConnection, filesDir, publicContentDir, rootDir } from './db-connection';
+import { connectToDatabase, filesDir, publicContentDir, rootDir } from './db-connection';
 import { ReesponseCodes } from './utils/response_codes';
 import { TryCatch } from './utils/trycatch';
 import { Uploader } from './models/Content';
@@ -154,17 +154,11 @@ app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 
 // Handle errors passed by express
-app.use((err:any, req:any, res: Response, next:any)=>{
+app.use((err:any, req:Request, res: Response, next:any)=>{
     res.status(ReesponseCodes.notFound).end()
 })
 
-// Start server after database connection
-databaseConnection.then((connection)=>{
-    app.listen(PORT, ()=>{
-        console.log(`App successfully started!`);
-    })
-})
-.catch((err)=>{
-    // Can't connect to database
-    throw err;
-})
+// Connect to database and serve app 
+connectToDatabase(app)    
+
+

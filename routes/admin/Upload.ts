@@ -6,8 +6,9 @@ import multer from 'multer';
 import {GridFsStorage} from 'multer-gridfs-storage';
 import { TryCatch } from '../../utils/trycatch';
 import { ReesponseCodes } from '../../utils/response_codes';
-import { databaseConnection, filesDir, publicContentDir, rootDir } from '../../db-connection';
+import { filesDir, publicContentDir, rootDir } from '../../db-connection';
 import { Uploader } from '../../models/Content'
+import { DB_CONNECTION_STRING } from '../../utils/constants';
 
 
 // Use file storage for storing files
@@ -85,7 +86,7 @@ const respondToUnSuccessful = (response: Response)=>{
 // Store file in db
 const uploadToDatabase = ()=>{
   const storage = new GridFsStorage({
-    //   url: DB_CONNECTION_STRING,
+    url: DB_CONNECTION_STRING,
     file: (request, file) => {
       const random = `${Math.random()}`.slice(3);
       const filename = `${random}${Date.now()}`
@@ -102,6 +103,6 @@ const uploadToDatabase = ()=>{
           }
       }
     },
-    db: databaseConnection
+    // db: databaseConnection
   });
 }

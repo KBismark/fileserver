@@ -1,3 +1,4 @@
+require('../../db-connection').IgnoreDatabaseConnection();
 
 describe('TryCatch', () => {
     const {TryCatch} = require('../../utils/trycatch')

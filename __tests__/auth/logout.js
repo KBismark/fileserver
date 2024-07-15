@@ -1,4 +1,5 @@
 const request = require('supertest');
+require('../../db-connection').IgnoreDatabaseConnection();
 const {app} = require('../../index'); 
 
 describe('Logout Tests', () => {
