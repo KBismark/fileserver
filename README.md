@@ -31,6 +31,20 @@ To access the application as the admin, sign in with the following details:
 
 **Password**: `12345678`    
 
+## How To Run App Locally
+Run app by first cloning this repo, `git clone https://github.com/KBismark/fileserver.git`    
+Navigate to the root director `cd fileserver`   
+> ### Installing and Building
+> If it's the first time building the app, run `npm run dep-build` to install all dependencies and also build the app at once.        
+> Else, after all dependencies have been installed, you can build the app anytime by running `npm run build`   
+> 
+> **NOTE**: Both dependencies for backend and frontend are installed when you run `npm run dep-build`    
+>     
+> ### Running the app
+> To run in dev mode, use the command `npm run dev`    
+> To run built app, use the command `npm start`    
+>
+
 ## ER Diagram of Database Design
 The database used in this project is MongoDB. The ER below represents the two collections used for this project. The Users colection is used for storing data related 
 to registerd users and the Files collection is used for storing uploaded files' related data.    
