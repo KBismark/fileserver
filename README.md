@@ -21,15 +21,17 @@ To have a system where admins can upload files that can be accessed by users onl
 ## Project Link
 [Live Demo](https://fileserver-8tgg.onrender.com/)    
 
-**Note**: This project is currently hosted with limitted resources as the hosting service is free. 
+**NOTE**: This project is currently hosted with limitted resources as the hosting service is free. 
 You may experience some seconds of delays especially when it has been inactive for a long time. 
 
 
-## Accessing As Admin
+## To log in as Admin
 To access the application as the admin, sign in with the following details:    
 **Email**: `admin@fileserver.com`    
 
 **Password**: `12345678`    
+
+**NOTE**: Resetting password for Admin has been disabled. This project is an assignment and must be reviewed before anyone who has access can make changes to the Admin account.    
 
 ## How To Run App Locally
 Run app by first cloning this repo, `git clone https://github.com/KBismark/fileserver.git`    
