@@ -1,4 +1,3 @@
-import {readdirSync} from 'fs'
 import express, {Response, Request} from 'express';
 import cors from 'cors'
 import bodyParser from 'body-parser'
@@ -11,7 +10,6 @@ import { authRouter } from './routes/auth';
 import { authenticateRequest } from './middleware';
 import { PageData } from './routes/data/Page';
 import { adminRouter } from './routes/admin';
-import { ADMIN_ACCOUNT, IS_DEVELOPMENT, PORT } from './utils/constants';
 import { connectToDatabase, filesDir, publicContentDir, rootDir } from './db-connection';
 import { ReesponseCodes } from './utils/response_codes';
 import { TryCatch } from './utils/trycatch';
