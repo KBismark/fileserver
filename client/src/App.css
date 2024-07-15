@@ -1,0 +1,50 @@
+.App {
+  
+}
+
+.Main{
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+button{
+  background-color: rgb(30, 199, 72);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 17px;
+  border-radius: 10px;
+  padding: 10px 20px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+button:hover{
+  background-color: rgb(31, 224, 79);
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+ 
+}
+
+.spinner{
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 5px solid rgb(31, 224, 79);;
+  border-bottom: 5px solid rgba(31, 224, 79, 0);;
+  animation: spin .5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
