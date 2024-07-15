@@ -43,6 +43,8 @@ Navigate to the root director `cd fileserver`
 > **NOTE**: Both dependencies for backend and frontend are installed when you run `npm run dep-build`    
 >     
 > ### Running the app
+> You must have built the app already before it can be ran.    
+>
 > To run in dev mode, use the command `npm run dev`    
 > To run built app, use the command `npm start`    
 >
