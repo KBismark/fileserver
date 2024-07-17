@@ -21,15 +21,31 @@ To have a system where admins can upload files that can be accessed by users onl
 ## Project Link
 [Live Demo](https://fileserver-8tgg.onrender.com/)    
 
-**Note**: This project is currently hosted with limitted resources as the hosting service is free. 
+**NOTE**: This project is currently hosted with limitted resources as the hosting service is free. 
 You may experience some seconds of delays especially when it has been inactive for a long time. 
 
 
-## Accessing As Admin
+## To log in as Admin
 To access the application as the admin, sign in with the following details:    
 **Email**: `admin@fileserver.com`    
 
 **Password**: `12345678`    
+
+**NOTE**: Resetting password for Admin has been disabled. This project is an assignment and must be reviewed before anyone who has access can make changes to the Admin account.    
+
+## How To Run App Locally
+Run app by first cloning this repo, `git clone https://github.com/KBismark/fileserver.git`    
+Navigate to the root director `cd fileserver`   
+> ### Installing and Building
+> If it's the first time building the app, run `npm run dep-build` to install all dependencies and also build the app at once.        
+> Else, after all dependencies have been installed, you can build the app anytime by running `npm run build`   
+> 
+> **NOTE**: Both dependencies for backend and frontend are installed when you run `npm run dep-build`    
+>     
+> ### Running the app
+> To run in dev mode, use the command `npm run dev`    
+> To run built app, use the command `npm start`    
+>
 
 ## ER Diagram of Database Design
 The database used in this project is MongoDB. The ER below represents the two collections used for this project. The Users colection is used for storing data related 
