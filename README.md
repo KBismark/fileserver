@@ -46,7 +46,7 @@ Navigate to the root director `cd fileserver`
 > You must have built the app already before it can be ran.    
 >
 > To run in dev mode, use the command `npm run dev`    
-> To run built app, use the command `npm start`    
+> To run built app, use the command `npm start`. The `ENV_STRING` in the `.env` file must be set to `production` for app to run successfully.        
 >
 
 ## ER Diagram of Database Design
