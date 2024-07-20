@@ -19,7 +19,7 @@ To have a system where admins can upload files that can be accessed by users onl
 
 
 ## Project Link
-[Live Demo](https://fileserver-8tgg.onrender.com/)    
+[Live Demo](https://fileserver-production-9a3c.up.railway.app/)  
 
 **NOTE**: This project is currently hosted with limitted resources as the hosting service is free. 
 You may experience some seconds of delays especially when it has been inactive for a long time. 
