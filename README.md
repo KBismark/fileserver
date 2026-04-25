@@ -17,13 +17,13 @@ To have a system where admins can upload files that can be accessed by users onl
 - Admin is also able to see the number of times a particular file is downloaded or shared.    
 
 
-
+<!--
 ## Project Link
 [Live Demo](https://fileserver-8tgg.onrender.com)  
 
 **NOTE**: This project is currently hosted with limitted resources as the hosting service is free. 
 You may experience some seconds of delays especially when it has been inactive for a long time. 
-
+-->
 
 ## To log in as Admin
 To access the application as the admin, sign in with the following details:    
